@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>Wecker-Test</title>
+<style>
+html,body{margin:0;height:100%;background:#000;color:#ddd;font-family:-apple-system,Helvetica,Arial,sans-serif}
+body{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;text-align:center}
+#clock{font-size:140px;font-weight:200}
+button{font-size:28px;padding:18px 34px;margin:12px;border:0;border-radius:14px;background:#333;color:#fff}
+#status{font-size:22px;margin-top:16px;min-height:60px;padding:0 30px}
+body.ring{background:#fff;color:#000}
+</style>
+</head>
+<body>
+<div id="clock">--:--:--</div>
+<button id="arm">Test starten: Wecker in 2 Minuten</button>
+<button id="stop" style="display:none">Stopp</button>
+<div id="status">Erst antippen, dann den Bildschirm eingeschaltet lassen. Lautstärke hoch, Stummschalter aus.</div>
+<script src="../sound.js"></script>
+<script>
+(function () {
+  var clockEl = document.getElementById('clock');
+  var statusEl = document.getElementById('status');
+  var armBtn = document.getElementById('arm');
+  var stopBtn = document.getElementById('stop');
+  var audio = null, silentSrc = null, alarmSrc = null, target = 0, ringing = false, flash = 0;
+
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+
+  function arm() {
+    if (!audio) {
+      audio = new Audio();
+      audio.loop = true;
+      silentSrc = Sound.silence();
+      alarmSrc = Sound.alarm();
+    }
+    // Im Tippen: stille Schleife starten, damit iOS diesem Element Ton erlaubt
+    audio.src = silentSrc;
+    audio.play();
+    target = Date.now() + 120000;
+    ringing = false;
+    armBtn.style.display = 'none';
+    stopBtn.style.display = '';
+  }
+
+  function ring() {
+    ringing = true;
+    audio.src = alarmSrc;
+    audio.play();
+  }
+
+  function stop() {
+    ringing = false;
+    target = 0;
+    if (audio) { audio.pause(); }
+    document.body.className = '';
+    armBtn.style.display = '';
+    stopBtn.style.display = 'none';
+    statusEl.textContent = 'Gestoppt.';
+  }
+
+  armBtn.onclick = arm;
+  stopBtn.onclick = stop;
+
+  setInterval(function () {
+    var d = new Date();
+    clockEl.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+    if (target && !ringing) {
+      var left = Math.round((target - d.getTime()) / 1000);
+      if (left > 0) {
+        statusEl.textContent = 'Scharf. Klingelt in ' + left + ' s. Stille Schleife läuft: ' + (audio && !audio.paused ? 'ja' : 'NEIN');
+      } else {
+        ring();
+      }
+    }
+    if (ringing) {
+      flash++;
+      document.body.className = (flash % 2) ? 'ring' : '';
+      statusEl.textContent = 'KLINGELT. Hast du etwas gehört? Dann Stopp.';
+      if (audio.paused) { audio.play(); }
+    }
+  }, 500);
+})();
+</script>
+</body>
+</html>

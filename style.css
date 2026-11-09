@@ -1,0 +1,71 @@
+/* Bewusst einfach gehalten: Safari auf iOS 10, keine Variablen, kein Grid. */
+html, body { margin: 0; height: 100%; background: #000; color: #e8e8e8;
+  font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0,0,0,0); overflow: hidden; }
+[hidden] { display: none !important; }
+
+#stage { position: absolute; top: 0; right: 0; bottom: 0; left: 0; padding: 3vmin 4vmin;
+  display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; }
+
+#clockbox { -webkit-flex: 0 0 auto; flex: 0 0 auto; text-align: center; -webkit-transition: -webkit-transform 2s; transition: transform 2s; }
+#clock { font-size: 30vmin; font-weight: 200; line-height: 1; letter-spacing: -0.02em; }
+#date { font-size: 4.2vmin; margin-top: 1vmin; color: #b8b8b8; }
+#alarmline { font-size: 3.6vmin; margin-top: 1.4vmin; color: #9ab; min-height: 4.4vmin; }
+#alarmline.warn { color: #ffb347; font-weight: 600; }
+#alarmline.off { color: #777; }
+
+#events { -webkit-flex: 1 1 auto; flex: 1 1 auto; display: -webkit-flex; display: flex; margin-top: 3vmin; min-height: 0; overflow: hidden; }
+.daycol { -webkit-flex: 1 1 0; flex: 1 1 0; padding: 0 2vmin; min-width: 0; }
+.daycol + .daycol { border-left: 1px solid #222; }
+.daycol h2 { margin: 0 0 1.2vmin; font-size: 3vmin; font-weight: 600; color: #8a8a8a; text-transform: uppercase; letter-spacing: 0.08em; }
+.daycol ul { list-style: none; margin: 0; padding: 0; }
+.daycol li { font-size: 3.6vmin; line-height: 1.25; padding: 0.9vmin 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.daycol li b { display: inline-block; min-width: 9vmin; font-weight: 600; color: #fff; }
+.daycol li.allday b { color: #8fb8ff; }
+.daycol li.first { color: #ffd479; }
+.daycol li.first b { color: #ffd479; }
+.daycol li.none, .daycol li.more { color: #666; }
+
+#foot { -webkit-flex: 0 0 auto; flex: 0 0 auto; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; padding-top: 1.5vmin; }
+#fetchinfo { -webkit-flex: 1 1 auto; flex: 1 1 auto; font-size: 2.4vmin; color: #666; }
+#fetchinfo.stale { color: #ffb347; }
+
+button { font-family: inherit; font-size: 3vmin; color: #ddd; background: #262626; border: 0; border-radius: 1.6vmin;
+  padding: 1.6vmin 3vmin; margin-left: 1.5vmin; }
+button.big { font-size: 3.4vmin; background: #1f4d8f; color: #fff; }
+button.huge { font-size: 6vmin; padding: 3.5vmin 6vmin; margin: 2vmin; }
+button:active { opacity: 0.7; }
+
+/* Einstellungen */
+.panel { position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: rgba(0,0,0,0.92); z-index: 10;
+  overflow: auto; -webkit-overflow-scrolling: touch; }
+.card { max-width: 90vmin; margin: 4vmin auto; padding: 3vmin; background: #151515; border-radius: 2vmin; font-size: 3.2vmin; }
+.card h1 { margin: 0 0 2vmin; font-size: 4.4vmin; font-weight: 600; }
+.row { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: space-between; justify-content: space-between; margin: 2vmin 0; }
+.row button:first-child { margin-left: 0; }
+.hint { color: #888; font-size: 2.6vmin; line-height: 1.35; margin: 1vmin 0; }
+input[type=time] { font-size: 5vmin; background: #262626; color: #fff; border: 0; border-radius: 1.2vmin; padding: 1vmin 1.6vmin; }
+textarea { width: 100%; box-sizing: border-box; font-size: 2.4vmin; background: #262626; color: #fff; border: 0; border-radius: 1.2vmin; padding: 1.4vmin; }
+#days button { margin-left: 0.8vmin; padding: 1.4vmin 1.8vmin; font-size: 2.8vmin; }
+#days button.on { background: #1f4d8f; color: #fff; }
+#calstatus { list-style: none; padding: 0; margin: 1vmin 0 0; font-size: 2.4vmin; color: #999; word-wrap: break-word; }
+#calstatus li.bad { color: #ffb347; }
+
+/* Es klingelt */
+#ring { position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 20; background: #000; color: #fff;
+  display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; text-align: center; }
+#ring.flash { background: #fff; color: #000; }
+#ringtime { font-size: 28vmin; font-weight: 200; line-height: 1; }
+#ringtext { font-size: 7vmin; margin: 2vmin 0 4vmin; }
+#ring button { background: #333; color: #fff; }
+#ring.flash button { background: #ccc; color: #000; }
+
+/* Nachtmodus: gedämpftes Rot, nichts blendet */
+body.night { color: #6b1a1a; }
+body.night #date, body.night #alarmline, body.night .daycol li b, body.night .daycol li.first, body.night .daycol li.first b,
+body.night .daycol li.allday b, body.night .daycol h2, body.night #fetchinfo { color: #4d1313; }
+body.night #alarmline.warn { color: #c25a00; }
+body.night button { background: #1a0a0a; color: #4d1313; }
+body.night .daycol + .daycol { border-color: #1a0808; }
+/* Antippen der Uhr blendet alles außer Uhr und Weckzeit aus */
+body.dark #events, body.dark #foot, body.dark #date { visibility: hidden; }

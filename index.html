@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Wecker">
+<meta name="format-detection" content="telephone=no">
+<title>Nachttisch-Wecker</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="stage">
+  <div id="clockbox">
+    <div id="clock">--:--</div>
+    <div id="date">&nbsp;</div>
+    <div id="alarmline">&nbsp;</div>
+  </div>
+
+  <div id="events">
+    <div class="daycol" id="col-today"><h2>Heute</h2><ul id="list-today"></ul></div>
+    <div class="daycol" id="col-tomorrow"><h2>Morgen</h2><ul id="list-tomorrow"></ul></div>
+  </div>
+
+  <div id="foot">
+    <span id="fetchinfo"></span>
+    <button id="btn-alarm" type="button">Wecker</button>
+    <button id="btn-cal" type="button">Kalender</button>
+  </div>
+</div>
+
+<!-- Wecker einstellen -->
+<div id="panel-alarm" class="panel" hidden>
+  <div class="card">
+    <h1>Wecker</h1>
+    <label class="row">Weckzeit <input id="in-time" type="time" value="06:30"></label>
+    <div class="row">
+      <span>Tage</span>
+      <span id="days"></span>
+    </div>
+    <p class="hint">Schlummern: 9 Minuten. Ohne ausgewählten Tag klingelt nichts.</p>
+    <div class="row">
+      <button id="btn-onoff" type="button" class="big">Wecker einschalten</button>
+    </div>
+    <div class="row">
+      <button id="btn-test" type="button">Ton testen (5 s)</button>
+      <button id="btn-close-alarm" type="button">Fertig</button>
+    </div>
+    <p id="alarmcheck" class="hint"></p>
+  </div>
+</div>
+
+<!-- Kalender einstellen -->
+<div id="panel-cal" class="panel" hidden>
+  <div class="card">
+    <h1>Kalender</h1>
+    <p class="hint">Je Zeile eine Kalender-Adresse (iCal-Link, https:// oder webcal://). Sie bleibt nur auf diesem iPad gespeichert.</p>
+    <textarea id="in-cals" rows="5" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea>
+    <div class="row">
+      <button id="btn-save-cal" type="button" class="big">Speichern und abrufen</button>
+      <button id="btn-close-cal" type="button">Schließen</button>
+    </div>
+    <ul id="calstatus"></ul>
+  </div>
+</div>
+
+<!-- Es klingelt -->
+<div id="ring" hidden>
+  <div id="ringtime">--:--</div>
+  <div id="ringtext">Aufstehen!</div>
+  <div class="row">
+    <button id="btn-snooze" type="button" class="huge">Schlummern</button>
+    <button id="btn-stop" type="button" class="huge">Aus</button>
+  </div>
+</div>
+
+<script src="ical.js"></script>
+<script src="sound.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
